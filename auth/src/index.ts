@@ -1,21 +1,15 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { json } from "body-parser";
-import 'express-async-errors'
-import { currentUserRouter } from "./routes/current-user";
-import { signoutRouter } from "./routes/signout";
-import { signupRouter } from "./routes/signup";
-import { signinRouter } from "./routes/signin";
+import "express-async-errors";
+import mongoose from "mongoose";
+import { UserRoutes } from "./routes/user";
 import { errorHandler } from "./middlewares/error-handler";
 import { NotFoundError } from "./errors/not-found-error";
-import mongoose from "mongoose";
 
 const app = express();
 app.use(json());
 
-app.use(signinRouter);
-app.use(signupRouter);
-app.use(currentUserRouter);
-app.use(signoutRouter);
+app.use(UserRoutes);
 
 app.all("*", async (req, res, next) => {
     throw new NotFoundError();
