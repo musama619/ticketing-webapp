@@ -7,17 +7,29 @@ export interface IUser extends Document {
 }
 
 // Define the User schema
-const userSchema = new Schema<IUser>({
-    email: {
-        type: String,
-        required: true,
-        unique: true,
+const userSchema = new Schema<IUser>(
+    {
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+        password: {
+            type: String,
+            required: true,
+        },
     },
-    password: {
-        type: String,
-        required: true,
-    },
-});
+    {
+        toJSON: {
+            transform(_, ret){
+                ret.id = ret._id;
+                delete ret._id;
+                delete ret.password;
+                delete ret.__v;
+            }
+        },
+    }  // changed _id to id for consistency, removed password and version key property from response
+);
 
 userSchema.pre("save", async function (done) {
     if (this.isModified("password")) {
